@@ -14530,6 +14530,93 @@
                         ,
                         t
                 }(),
+                // -----------------------------
+                // STRAFE PANEL + TOGGLE FUNCTION
+                // -----------------------------
+                this.initStrafePanel = function () {
+                    const client = this; // preserve reference to client
+
+                    function toggleStrafe() {
+                        try {
+                            const mode = client.mode; // assumes client has mode/options
+                            if (!mode || !mode.options) return;
+
+                            mode.options.strafe = mode.options.strafe === 1 ? 0 : 1;
+                            const enabled = mode.options.strafe === 1;
+
+                            console.log(
+                                "%c[Client]%c Strafe " + (enabled ? "ENABLED" : "DISABLED"),
+                                "color:#c4bf9f",
+                                "color:" + (enabled ? "#00ff00" : "#ff4444")
+                            );
+
+                            const btn = document.getElementById("strafe-btn");
+                            if (btn) {
+                                btn.textContent = "Strafe: " + (enabled ? "ON" : "OFF");
+                                btn.style.background = enabled
+                                    ? "linear-gradient(90deg, #007a00, #00b000)"
+                                    : "radial-gradient(ellipse at center, hsla(200,50%,0%,1) 0, hsla(200,100%,80%,0.5) 150%)";
+                            }
+                        } catch (err) {
+                            console.error("[Client] Strafe error:", err);
+                        }
+                    }
+
+                    // Create panel UI
+                    const panel = document.createElement("div");
+                    panel.id = "strafe-client-panel";
+                    panel.style.position = "fixed";
+                    panel.style.bottom = "20px";
+                    panel.style.right = "20px";
+                    panel.style.width = "160px";
+                    panel.style.padding = "12px";
+                    panel.style.background = "rgba(0,0,0,0.8)";
+                    panel.style.border = "2px solid #00bcd4";
+                    panel.style.borderRadius = "10px";
+                    panel.style.zIndex = "9999";
+                    panel.style.display = "none";
+                    panel.style.flexDirection = "column";
+                    panel.style.alignItems = "center";
+                    panel.style.fontFamily = "Arial, sans-serif";
+                    panel.style.color = "#fff";
+
+                    // Title
+                    const title = document.createElement("div");
+                    title.textContent = "Strafe Client";
+                    title.style.textAlign = "center";
+                    title.style.fontWeight = "bold";
+                    title.style.marginBottom = "8px";
+                    panel.appendChild(title);
+
+                    // Strafe button
+                    const btn = document.createElement("button");
+                    btn.id = "strafe-btn";
+                    btn.textContent = "Strafe: OFF";
+                    btn.style.width = "100%";
+                    btn.style.padding = "6px 0";
+                    btn.style.border = "none";
+                    btn.style.borderRadius = "6px";
+                    btn.style.cursor = "pointer";
+                    btn.style.fontWeight = "bold";
+                    btn.style.background =
+                        "radial-gradient(ellipse at center, hsla(200,50%,0%,1) 0, hsla(200,100%,80%,0.5) 150%)";
+                    btn.style.color = "#fff";
+                    btn.onclick = toggleStrafe;
+                    panel.appendChild(btn);
+
+                    document.body.appendChild(panel);
+
+                    // Ctrl+J to show/hide panel
+                    document.addEventListener("keydown", function (e) {
+                        if (e.ctrlKey && e.key.toLowerCase() === "j") {
+                            e.preventDefault();
+                            panel.style.display = panel.style.display === "none" ? "flex" : "none";
+                        }
+                    });
+
+                    // Expose toggle globally if needed
+                    client.toggleStrafe = toggleStrafe;
+                };
                 this.Splash = function () {
                     function t(t, e, i, s) {
                         this.IO001 = t,
